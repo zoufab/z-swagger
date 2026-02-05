@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: User Groups API Contract
+  version: 1.0.0
+  description: |
+    Contrat d'interface OpenAPI pour la gestion de groupes d'utilisateurs.
+    Ce contrat est conçu pour générer des interfaces côté Spring Boot.
+servers:
+  - url: http://localhost:8081
+    description: Local
+
+tags:
+  - name: UserGroups
+    description: Opérations CRUD sur les groupes d'utilisateurs
+
+paths:
+  /api/v1/user-groups:
+    $ref: ./paths/user-groups/user-groups.collection.yaml
+  /api/v1/user-groups/{groupId}:
+    $ref: ./paths/user-groups/user-groups.item.yaml
+
+components:
+  schemas:
+    ErrorResponse:
+      $ref: ./schemas/common/error-response.yaml
+    PaginationMetadata:
+      $ref: ./schemas/common/pagination-metadata.yaml
+
+    UserGroup:
+      $ref: ./schemas/user-groups/responses/user-group.yaml
+    UserGroupListResponse:
+      $ref: ./schemas/user-groups/responses/user-group-list-response.yaml
+    UserGroupResponse:
+      $ref: ./schemas/user-groups/responses/user-group-response.yaml
+
+    CreateUserGroupRequest:
+      $ref: ./schemas/user-groups/requests/create-user-group-request.yaml
+    PatchUserGroupRequest:
+      $ref: ./schemas/user-groups/requests/patch-user-group-request.yaml
+
+  parameters:
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: Identifiant technique du groupe
+      schema:
+        type: string
+        format: uuid

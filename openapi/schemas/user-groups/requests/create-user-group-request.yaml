@@ -1,0 +1,19 @@
+type: object
+required:
+  - name
+  - description
+properties:
+  name:
+    type: string
+    minLength: 3
+    maxLength: 50
+    pattern: '^[A-Z0-9_]+$'
+    example: SUPPORT_TEAM
+  description:
+    type: string
+    maxLength: 255
+    example: Groupe de support niveau 1
+  enabled:
+    type: boolean
+    default: true
+    example: true
