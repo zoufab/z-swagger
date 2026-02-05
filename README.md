@@ -7,7 +7,6 @@ Ce repository contient un projet **Node.js + OpenAPI 3** pour définir un contra
 ---
 
 ## 1) Endpoints couverts
-
 - `GET /api/v1/user-groups`
 - `POST /api/v1/user-groups`
 - `GET /api/v1/user-groups/{groupId}`
