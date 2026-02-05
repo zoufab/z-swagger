@@ -1,0 +1,23 @@
+type: object
+required:
+  - page
+  - size
+  - totalElements
+  - totalPages
+properties:
+  page:
+    type: integer
+    minimum: 0
+    example: 0
+  size:
+    type: integer
+    minimum: 1
+    example: 20
+  totalElements:
+    type: integer
+    minimum: 0
+    example: 120
+  totalPages:
+    type: integer
+    minimum: 0
+    example: 6

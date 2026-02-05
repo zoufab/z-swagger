@@ -1,0 +1,20 @@
+{
+  "name": "z-swagger-user-groups-contract",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Projet OpenAPI pour générer un contrat Spring Boot de gestion de groupes d'utilisateurs",
+  "scripts": {
+    "lint": "swagger-cli validate openapi/openapi.yaml",
+    "bundle": "mkdir -p dist && swagger-cli bundle openapi/openapi.yaml -o dist/openapi.yaml -t yaml",
+    "bundle:json": "mkdir -p dist && swagger-cli bundle openapi/openapi.yaml -o dist/openapi.json -t json",
+    "docker:build": "docker compose build",
+    "docker:bundle": "docker compose run --rm contract-builder",
+    "docker:up": "docker compose up -d --build swagger-editor swagger-ui docs-server",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-cli": "^4.0.4",
+    "http-server": "^14.1.1"
+  }
+}
