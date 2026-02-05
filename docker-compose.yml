@@ -1,4 +1,27 @@
 services:
+  contract-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: contract-builder
+    command: sh -c "npm run lint && npm run bundle"
+    volumes:
+      - ./openapi:/app/openapi
+      - ./dist:/app/dist
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    depends_on:
+      contract-builder:
+        condition: service_completed_successfully
+    environment:
+      SWAGGER_JSON: /usr/share/nginx/html/openapi.yaml
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./dist/openapi.yaml:/usr/share/nginx/html/openapi.yaml:ro
+
   swagger-editor:
     image: swaggerapi/swagger-editor:latest
     container_name: swagger-editor
@@ -7,14 +30,18 @@ services:
     environment:
       URL: /spec/openapi.yaml
     volumes:
-      - ./openapi:/spec:ro
+      - ./openapi/openapi.yaml:/spec/openapi.yaml:ro
 
-  swagger-ui:
-    image: swaggerapi/swagger-ui:latest
-    container_name: swagger-ui
+  docs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docs-server
+    depends_on:
+      contract-builder:
+        condition: service_completed_successfully
+    command: sh -c "npx http-server dist -p 8082 -c-1"
     ports:
-      - "8081:8080"
-    environment:
-      SWAGGER_JSON: /usr/share/nginx/html/openapi.yaml
+      - "8082:8082"
     volumes:
-      - ./dist/openapi.yaml:/usr/share/nginx/html/openapi.yaml:ro
+      - ./dist:/app/dist:ro
