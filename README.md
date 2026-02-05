@@ -1,8 +1,12 @@
 # Projet OpenAPI - Gestion des groupes d'utilisateurs
 
-Ce repository contient un projet **Node.js** basé sur **OpenAPI 3** pour définir un contrat d'interface de gestion des groupes d'utilisateurs, puis générer une base d'API **Spring Boot**.
+Ce repository contient un projet **Node.js + OpenAPI 3** pour définir un contrat d'interface de gestion des groupes d'utilisateurs et générer un contrat backend **Spring Boot**.
 
-Le contrat couvre les endpoints suivants :
+> ✅ Le projet est désormais **dockerisé de bout en bout** : validation, bundling et visualisation se font via **Docker Compose** (pas besoin d'installer les dépendances Node.js en local).
+
+---
+
+## 1) Endpoints couverts
 - `GET /api/v1/user-groups`
 - `POST /api/v1/user-groups`
 - `GET /api/v1/user-groups/{groupId}`
@@ -11,10 +15,12 @@ Le contrat couvre les endpoints suivants :
 
 ---
 
-## 1) Structure du projet
+## 2) Structure du projet
 
 ```text
 .
+├── .dockerignore
+├── Dockerfile
 ├── docker-compose.yml
 ├── openapi
 │   ├── openapi.yaml
@@ -38,83 +44,87 @@ Le contrat couvre les endpoints suivants :
 └── dist
 ```
 
-Les schémas sont classés par domaine fonctionnel (`user-groups`) et par type (`requests`, `responses`).
+Les schémas sont classés par domaine (`user-groups`) et par type (`requests`, `responses`).
 
 ---
 
-## 2) Prérequis
+## 3) Prérequis
 
-- Node.js 18+
-- npm 9+
-- Docker + Docker Compose
-
----
-
-## 3) Installation
-
-```bash
-npm install
-```
+- Docker
+- Docker Compose
 
 ---
 
-## 4) Validation et bundling du contrat OpenAPI
+## 4) Dockerisation du projet
 
-Le projet utilise `swagger-cli` pour valider et produire un fichier unique dans `dist/`.
+### Services définis dans `docker-compose.yml`
 
-### Valider la spec
+1. **contract-builder**
+   - Build via `Dockerfile`
+   - Installe les dépendances Node.js dans l'image
+   - Exécute :
+     - validation OpenAPI (`npm run lint`)
+     - bundling YAML (`npm run bundle`)
+
+2. **swagger-ui**
+   - Affiche la version HTML du contrat bundle (`dist/openapi.yaml`)
+   - URL : `http://localhost:8081`
+
+3. **swagger-editor**
+   - Permet d'éditer la spec principale (`openapi/openapi.yaml`)
+   - URL : `http://localhost:8080`
+
+4. **docs-server**
+   - Sert le dossier `dist` en HTTP
+   - URL : `http://localhost:8082/openapi.yaml`
+
+---
+
+## 5) Commandes principales (via Docker Compose)
+
+### Construire les images
 ```bash
-npm run lint
+npm run docker:build
 ```
 
-### Générer le YAML consolidé
+### Générer/valider le contrat (lint + bundle)
 ```bash
-npm run bundle
+npm run docker:bundle
 ```
 
-### Générer la version JSON consolidée
+### Lancer Swagger Editor + Swagger UI + serveur docs
 ```bash
-npm run bundle:json
+npm run docker:up
+```
+
+### Arrêter les services
+```bash
+npm run docker:down
+```
+
+### Voir les logs
+```bash
+npm run docker:logs
 ```
 
 ---
 
-## 5) Visualiser le Swagger en HTML sur localhost
+## 6) Commande pour visualiser le Swagger en rendu HTML localhost
 
-### Option A — rendu HTML local via Node.js (commande demandée)
-```bash
-npm run docs:serve
-```
+Commande recommandée :
 
-Puis ouvrir :
-- `http://localhost:8080/openapi.yaml`
-
-> Cette commande sert le contrat bundle. Vous pouvez ensuite le charger dans Swagger Editor/UI.
-
-### Option B — rendu Swagger UI via Docker
-1. Bundle du contrat :
-```bash
-npm run bundle
-```
-2. Démarrage des conteneurs :
 ```bash
 npm run docker:up
 ```
 
 Puis ouvrir :
-- **Swagger Editor** : `http://localhost:8080`
-- **Swagger UI** : `http://localhost:8081`
-
-Arrêt des conteneurs :
-```bash
-npm run docker:down
-```
+- Swagger UI (rendu HTML): **http://localhost:8081**
 
 ---
 
-## 6) Générer un contrat Spring Boot (interfaces/controllers)
+## 7) Génération du contrat Spring Boot
 
-Exemple avec `openapi-generator-cli` via Docker :
+Exemple avec OpenAPI Generator (Docker) :
 
 ```bash
 docker run --rm \
@@ -127,27 +137,14 @@ docker run --rm \
 ```
 
 Résultat :
-- Le contrat/les interfaces Spring seront générés dans `generated/spring-contract`.
+- Interfaces/contrat Spring Boot générés dans `generated/spring-contract`.
 
 ---
 
-## 7) Workflow recommandé
+## 8) Workflow recommandé
 
-1. Modifier la spec modulaire dans `openapi/`
-2. Lancer `npm run lint`
-3. Lancer `npm run bundle`
-4. Visualiser dans Swagger Editor/UI
-5. Générer les interfaces Spring Boot avec OpenAPI Generator
-
----
-
-## 8) Scripts npm disponibles
-
-- `npm run lint` : validation OpenAPI
-- `npm run bundle` : bundle YAML dans `dist/openapi.yaml`
-- `npm run bundle:json` : bundle JSON dans `dist/openapi.json`
-- `npm run docs:serve` : serveur local sur le port 8080
-- `npm run docker:up` : démarre Swagger Editor + Swagger UI
-- `npm run docker:down` : arrête les conteneurs
-- `npm run docker:logs` : suit les logs Docker
-
+1. Modifier la spec dans `openapi/`
+2. Lancer `npm run docker:bundle`
+3. Lancer `npm run docker:up`
+4. Vérifier le rendu dans Swagger UI et Swagger Editor
+5. Générer le contrat Spring Boot

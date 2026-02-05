@@ -7,8 +7,9 @@
     "lint": "swagger-cli validate openapi/openapi.yaml",
     "bundle": "mkdir -p dist && swagger-cli bundle openapi/openapi.yaml -o dist/openapi.yaml -t yaml",
     "bundle:json": "mkdir -p dist && swagger-cli bundle openapi/openapi.yaml -o dist/openapi.json -t json",
-    "docs:serve": "npm run bundle && http-server dist -p 8080 -c-1",
-    "docker:up": "docker compose up -d --build",
+    "docker:build": "docker compose build",
+    "docker:bundle": "docker compose run --rm contract-builder",
+    "docker:up": "docker compose up -d --build swagger-editor swagger-ui docs-server",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f"
   },
