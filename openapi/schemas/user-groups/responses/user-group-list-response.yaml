@@ -1,0 +1,11 @@
+type: object
+required:
+  - data
+  - pagination
+properties:
+  data:
+    type: array
+    items:
+      $ref: ../../../openapi.yaml#/components/schemas/UserGroup
+  pagination:
+    $ref: ../../../openapi.yaml#/components/schemas/PaginationMetadata

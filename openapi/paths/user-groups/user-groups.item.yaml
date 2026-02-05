@@ -1,0 +1,65 @@
+parameters:
+  - $ref: ../../openapi.yaml#/components/parameters/GroupId
+
+get:
+  tags: [UserGroups]
+  summary: Obtenir un groupe par son identifiant
+  operationId: getUserGroupById
+  responses:
+    '200':
+      description: Groupe trouvé
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/UserGroupResponse
+    '404':
+      description: Groupe introuvable
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/ErrorResponse
+
+patch:
+  tags: [UserGroups]
+  summary: Mettre à jour partiellement un groupe
+  operationId: patchUserGroup
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../openapi.yaml#/components/schemas/PatchUserGroupRequest
+  responses:
+    '200':
+      description: Groupe mis à jour
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/UserGroupResponse
+    '400':
+      description: Payload invalide
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/ErrorResponse
+    '404':
+      description: Groupe introuvable
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/ErrorResponse
+
+
+delete:
+  tags: [UserGroups]
+  summary: Supprimer un groupe
+  operationId: deleteUserGroup
+  responses:
+    '204':
+      description: Groupe supprimé
+    '404':
+      description: Groupe introuvable
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yaml#/components/schemas/ErrorResponse

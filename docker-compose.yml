@@ -1,0 +1,20 @@
+services:
+  swagger-editor:
+    image: swaggerapi/swagger-editor:latest
+    container_name: swagger-editor
+    ports:
+      - "8080:8080"
+    environment:
+      URL: /spec/openapi.yaml
+    volumes:
+      - ./openapi:/spec:ro
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    ports:
+      - "8081:8080"
+    environment:
+      SWAGGER_JSON: /usr/share/nginx/html/openapi.yaml
+    volumes:
+      - ./dist/openapi.yaml:/usr/share/nginx/html/openapi.yaml:ro
