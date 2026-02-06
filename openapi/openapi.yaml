@@ -11,7 +11,7 @@ servers:
 
 tags:
   - name: UserGroups
-    description: Opérations CRUD sur les groupes d'utilisateurs
+    description: Opérations CRUD sur les groupes d'utilisateurs ✔ 
 
 paths:
   /api/v1/user-groups:
